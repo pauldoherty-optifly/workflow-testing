@@ -1,0 +1,37 @@
+name: Test CI/CD
+
+on:
+  push:
+    branches:
+      - '**'
+
+jobs:
+  build:
+    name: Build
+    uses: ./.github/workflows/build.yml
+  development:
+    name: Deploy to Development
+    needs: build
+    runs-on: ubuntu-latest
+    environment: Development
+    steps:
+      - run: echo "Deploying to Development ${{secrets.NAME}}"
+  staging:
+    name: Deploy to Staging
+    needs: [development]
+#    if: github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    environment: Staging
+    steps:
+      - run: echo "Deploying to Staging ${{secrets.NAME}}"
+  production:
+    name: Deploy to Production
+    needs: [staging]
+#    if: github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    environment: Production
+    steps:
+      - run: echo "Deploying to Production ${{secrets.NAME}}"
+
+#  staging:
+#  production:
