@@ -2,6 +2,8 @@ name: Test CI/CD
 
 on:
   workflow_dispatch:
+  pull_request:
+    types: [opened, synchronize, reopened]
   push:
     branches:
       - '**'
@@ -14,7 +16,7 @@ jobs:
       - run: echo "Building"
   development:
     name: Deploy to Development
-    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && github.event.action != 'closed') || github.ref == 'refs/heads/main'
+    if: github.event_name == 'workflow_dispatch' || github.event_name == 'pull_request' || github.ref == 'refs/heads/main'
     needs: build
     runs-on: ubuntu-latest
     environment: Development
